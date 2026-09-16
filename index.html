@@ -1,40 +1,148 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name=viewport content="width=device-width,initial-scale=1"><title>MarkTasks</title><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/d
-ist/email.min.js"></script><style>*{box-sizing:border-box;font-family:Arial}body{margin:0;padding-bottom:95px;background:#fff}.logo{font-weight:900;font-size:22px}.logo span{color:#fbbf24}.btn-dark{width:100%
-;background:#0f172a;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:bold;margin-top:8px}.balance-card{background:#fffbeb;border-radius:18px;margin:12px 16px;padding:20px;border:1px solid #fd
-e68a}.task-card{border:1px solid #eee;border-radius:14px;margin:8px 16px;padding:14px;display:flex;gap:12px;align-items:center}.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #d
-dd;display:flex;justify-content:space-around;padding:12px 0 16px;z-index:99}.nav button{border:0;background:0;font-size:13px;font-weight:bold;color:#6b7280;padding:8px 16px;border-radius:12px}.nav button.act
-ive{background:#0f172a;color:#fff;transform:scale(1.1)}.auth{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}.auth-box{width:100%;max-wid
-th:360px;padding:22px;border-radius:18px;border:1px solid #eee}.popup{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px}.popu
-p-box{background:#fff;padding:26px;border-radius:18px;width:100%;max-width:360px;text-align:center}input,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:9px}.task-type-car
-d{border:2px solid #eee;border-radius:12px;padding:12px;margin:6px 0;display:flex;gap:12px;align-items:center;cursor:pointer}.task-type-card.selected{border-color:#0f172a;background:#f0f9ff}.logo-box{width:42p
-x;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff}.otp-input{letter-spacing:6px;font-size:22px;text-align:center;font-weight:9
-00}.acct-box{background:#f0fdf4;border:2px dashed #10b981;border-radius:12px;padding:16px;margin:12px 0;text-align:center}.task-pop{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:cente
-r;justify-content:center;z-index:10001;padding:16px}.task-pop-box{background:#fff;padding:20px;border-radius:16px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto}.join-banner{background:linear-gra
-dient(90deg,#25D366,#128C7E);color:#fff;margin:10px 16px;padding:12px 14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;font-weight:bold;font-size:13px;text-decoration:none
-}.join-banner span{background:#fff;color:#128C7E;padding:6px 12px;border-radius:20px;font-size:12px}</style></head><body><div id=app></div><div id=popup class=popup onclick=closePop()><div class=popup-box on
-click=event.stopPropagation()><div style=font-size:42px>✅</div><p id=popMsg style=font-weight:700;margin:14px 0></p><button class=btn-dark onclick=closePop()>OK</button></div></div><div id=taskPop class=task-p
-op onclick=closeTaskPop()><div class=task-pop-box onclick=event.stopPropagation()><h3 id=tpTitle style=margin:0 0 6px></h3><div id=tpType style=font-size:12px;color:#6366f1;font-weight:bold;margin-bottom:8px><
-/div><div id=tpInstr style=font-size:12px;color:#ef4444;font-weight:bold;margin-bottom:8px;display:none></div><div id=tpCustomBox style=display:none;background:#fffbeb;border:1px dashed #f59e0b;border-radiu
-s:10px;padding:10px;margin-bottom:10px><div style=font-size:11px;font-weight:bold>Comment to copy:</div><div id=tpCustomText style=font-size:13px;margin:6px 0;word-break:break-word></div><button style=padding:
-6px 12px;background:#0f172a;color:#fff;border:0;border-radius:6px;font-size:12px onclick=copyCustom()>📋 Copy</button></div><a id=tpLink target=_blank style=display:block;background:#eef2ff;padding:12px;bord
-er-radius:10px;text-align:center;font-weight:bold;color:#0f172a;text-decoration:none;margin-bottom:12px>🔗 View Task Link</a><label style=font-weight:bold;font-size:13px>Username used</label><input id=tpUse
-r placeholder="@username"><label style=font-weight:bold;font-size:13px;margin-top:10px;display:block>Submit Proof</label><div id=proofBox onclick=tpFile.click() style=border:2px dashed #0f172a;border-radius:10
-px;padding:20px;text-align:center;margin-top:6px;cursor:pointer;background:#f9fafb><div style=font-size:30px>📸</div><div id=proofText style=font-size:12px;color:#666;margin-top:4px>Tap to open Gallery</div></d
-iv><input id=tpFile type=file accept=image/* style=display:none onchange=showProofName()><button class=btn-dark onclick=submitTask()>Submit Proof</button><button style=width:100%;margin-top:8px;padding:12px;
-border:1px solid #ddd;background:#fff;border-radius:9px onclick=closeTaskPop()>Cancel</button></div></div><script>const S="service_147bn6m",T="template_kndbrqg",P="eOnK3qvUFiw89dhdV";emailjs.init(P);const AD="ma
-rkobinna120@gmail.com",DB="marktasks_FINAL_v100";let db=JSON.parse(localStorage.getItem(DB)||"null");if(!db)db={u:[],t:[],w:[],d:[],ts:[],cu:null};if(!db.w)db.w=[];if(!db.d)db.d=[];if(!db.ts)db.ts=[];let cur=db
-.cu?db.u.find(x=>x.id===db.cu):null;let selP=null,selA=null,adm="users",pend=null,otp=null,tmp=0,curT=null;const PL=[{id:"whatsapp",n:"WhatsApp",i:"WA",c:"#25D366"},{id:"instagram",n:"Instagram",i:"IG",c:"#E130
-6C"},{id:"tiktok",n:"TikTok",i:"TT",c:"#000"},{id:"facebook",n:"Facebook",i:"FB",c:"#1877F2"},{id:"youtube",n:"YouTube",i:"YT",c:"#FF0000"},{id:"telegram",n:"Telegram",i:"TG",c:"#0088cc"},{id:"website",n:"Websit
-e",i:"WS",c:"#f59e0b"}];const AC={like:{n:"Like",p:11,e:4},follow:{n:"Follow",p:11,e:5},comment:{n:"Comment",p:11,e:5},custom:{n:"Custom Comment",p:50,e:10},share:{n:"Share",p:11,e:4},join:{n:"Join Group/Channel"
-,p:17,e:7},bot:{n:"Start Bot",p:20,e:10},view:{n:"Video View",p:12,e:3},signup:{n:"Website Sign Up",p:30,e:10},vote:{n:"Website Vote",p:30,e:7},visit:{n:"Website Visit",p:30,e:7}};function gA(p){if(p=="whatsapp
-")return["join"];if(p=="telegram")return["join","bot"];if(p=="website")return["signup","vote","visit"];return["like","follow","comment","custom","share","view","join"]}function sv(){localStorage.setItem(DB,JS
-ON.stringify(db))}function isA(u){return u&&u.email.toLowerCase()==AD.toLowerCase()}function pop(m){popMsg.innerText=m;popup.style.display="flex"}function closePop(){popup.style.display="none"}function clos
-eTaskPop(){taskPop.style.display="none"}function showProofName(){let f=tpFile.files[0];if(f){proofText.innerHTML="✅ "+f.name;proofBox.style.borderColor="#10b981";proofBox.style.background="#f0fdf4"}}function
- copyCustom(){navigator.clipboard.writeText(tpCustomText.innerText);pop("✅ Copied!")}function R(){if(!cur){signup();return}main()}function signup(){app.innerHTML=`<div class=auth><div class=auth-box><h2 style=
-text-align:center>M<span style=color:#fbbf24>Tasks</span></h2><input id=sn placeholder="Full Name"><input id=se placeholder="Email"><input id=sp type=password placeholder="Password"><button class=btn-dark i
-d=sb onclick=sOTP()>Sign Up</button><div id=st style=text-align:center;margin-top:8px;font-size:12px;color:#6366f1></div><br><center><small onclick=loginP()>Have account? <b>Login</b></small></center></div><
-/div>`}function loginP(){app.innerHTML=`<div class=auth><div class=auth-box><h2 style=text-align:center>Mark<span style=color:#fbbf24>Tasks</span></h2><input id=le placeholder="Email"><input id=lp type=passwo
-rd placeholder="Password"><button class=btn-dark onclick=log()>Login</button><br><br><center><small onclick=signup()>No account? <b>Sign Up</b></small></center></div></div>`}async function sOTP(r){let n=r?pe
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MarkTasks</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+*{box-sizing:border-box;font-family:Arial}
+body{margin:0;padding-bottom:95px;background:#fff}
+.logo{font-weight:900;font-size:22px}.logo span{color:#fbbf24}
+.btn-dark{width:100%;background:#0f172a;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:bold;margin-top:8px}
+.balance-card{background:#fffbeb;border-radius:18px;margin:12px 16px;padding:20px;border:1px solid #fde68a}
+.task-card{border:1px solid #eee;border-radius:14px;margin:8px 16px;padding:14px;display:flex;gap:12px;align-items:center}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:12px 0 16px;z-index:99}
+.nav button{border:0;background:0;font-size:13px;font-weight:bold;color:#6b7280;padding:8px 16px;border-radius:12px}
+.nav button.active{background:#0f172a;color:#fff}
+.auth{position:fixed;inset:0;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}
+.auth-box{width:100%;max-width:360px;padding:22px;border-radius:18px;border:1px solid #eee}
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px}
+.popup-box{background:#fff;padding:26px;border-radius:18px;width:100%;max-width:360px;text-align:center}
+input,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:9px}
+.task-type-card{border:2px solid #eee;border-radius:12px;padding:12px;margin:6px 0;display:flex;gap:12px;align-items:center;cursor:pointer}
+.task-type-card.selected{border-color:#0f172a;background:#f0f9ff}
+.logo-box{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff}
+.join-banner{background:linear-gradient(90deg,#25D366,#128C7E);color:#fff;margin:10px 16px;padding:12px 14px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;font-weight:bold;font-size:13px;text-decoration:none}
+.join-banner span{background:#fff;color:#128C7E;padding:6px 12px;border-radius:20px;font-size:12px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="popup" class="popup" onclick="closePop()"><div class="popup-box" onclick="event.stopPropagation()"><p id="popMsg"></p><button class="btn-dark" onclick="closePop()">OK</button></div></div>
+
+<div id="taskPop" style="position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:10001;padding:16px" onclick="closeTaskPop()">
+<div style="background:#fff;padding:20px;border-radius:16px;width:100%;max-width:380px" onclick="event.stopPropagation()">
+<h3 id="tpTitle"></h3><div id="tpType"></div>
+<a id="tpLink" target="_blank" style="display:block;background:#eef2ff;padding:10px;text-align:center;border-radius:8px;margin:8px 0">View Task</a>
+<input id="tpUser" placeholder="@username">
+<div id="proofBox" onclick="document.getElementById('tpFile').click()" style="border:2px dashed #0f172a;padding:20px;text-align:center;margin-top:6px"><div id="proofText">Tap Gallery</div></div>
+<input id="tpFile" type="file" accept="image/*" style="display:none" onchange="showProofName()">
+<button class="btn-dark" onclick="submitTask()">Submit Proof</button>
+<button onclick="closeTaskPop()" style="width:100%;margin-top:6px;padding:10px;background:#fff;border:1px solid #ddd;border-radius:8px">Cancel</button>
+</div>
+</div>
+
+<script>
+const S="service_147bn6m",T="template_kndbrqg",P="eOnK3qvUFiw89dhdV"; emailjs.init(P);
+const AD="markobinna120@gmail.com",DB="marktasks_FINAL_v100";
+let db=JSON.parse(localStorage.getItem(DB)||"null");if(!db)db={u:[],t:[],w:[],d:[],ts:[],cu:null};
+if(!db.w)db.w=[];if(!db.d)db.d=[];if(!db.ts)db.ts=[];
+let cur=db.cu?db.u.find(x=>x.id===db.cu):null;
+let selP=null,selA=null,adm="users",pend=null,otp=null,tmp=0,curT=null;
+const PL=[{id:"whatsapp",n:"WhatsApp",i:"WA",c:"#25D366"},{id:"instagram",n:"Instagram",i:"IG",c:"#E1306C"},{id:"tiktok",n:"TikTok",i:"TT",c:"#000"},{id:"facebook",n:"Facebook",i:"FB",c:"#1877F2"},{id:"youtube",n:"YouTube",i:"YT",c:"#FF0000"},{id:"telegram",n:"Telegram",i:"TG",c:"#0088cc"},{id:"website",n:"Website",i:"WS",c:"#f59e0b"}];
+const AC={like:{n:"Like",p:11,e:4},follow:{n:"Follow",p:11,e:5},comment:{n:"Comment",p:11,e:5},custom:{n:"Custom Comment",p:50,e:10},share:{n:"Share",p:11,e:4},join:{n:"Join Group/Channel",p:17,e:7},bot:{n:"Start Bot",p:20,e:10},view:{n:"Video View",p:12,e:3},signup:{n:"Website Sign Up",p:30,e:10},vote:{n:"Website Vote",p:30,e:7},visit:{n:"Website Visit",p:30,e:7}};
+
+function gA(p){if(p=="whatsapp")return["join"];if(p=="telegram")return["join","bot"];if(p=="website")return["signup","vote","visit"];return["like","follow","comment","custom","share","view","join"]}
+function sv(){localStorage.setItem(DB,JSON.stringify(db))}
+function isA(u){return u&&u.email.toLowerCase()==AD.toLowerCase()}
+function pop(m){document.getElementById('popMsg').innerText=m;document.getElementById('popup').style.display="flex"}
+function closePop(){document.getElementById('popup').style.display="none"}
+function closeTaskPop(){document.getElementById('taskPop').style.display="none"}
+function showProofName(){let f=document.getElementById('tpFile').files[0];if(f)document.getElementById('proofText').innerHTML="✅ "+f.name}
+function R(){if(!cur){signup();return}main()}
+
+function signup(){document.getElementById('app').innerHTML=`<div class=auth><div class=auth-box><h2 style=text-align:center>MarkTasks Signup</h2><input id=sn placeholder="Full Name"><input id=se placeholder="Email Address"><input id=sp type=password placeholder="Password"><button class=btn-dark id=sb onclick=sOTP()>Send Real Code</button><div id=st style=text-align:center;margin-top:8px;font-size:12px></div><br><center><small onclick=loginP()>Have account? <b>Login</b></small></center></div></div>`}
+function loginP(){document.getElementById('app').innerHTML=`<div class=auth><div class=auth-box><h2 style=text-align:center>MarkTasks Login</h2><input id=le placeholder="Email Address"><input id=lp type=password placeholder="Password"><button class=btn-dark onclick=log()>Login</button><br><br><center><small onclick=signup()>No account? Sign Up</small></center></div></div>`}
+
+async function sOTP(r){
+let n=r?pend.name:document.getElementById('sn').value,
+e=r?pend.email:document.getElementById('se').value.toLowerCase().trim(),
+p=r?pend.password:document.getElementById('sp').value;
+if(!n||!e||!p){alert("Fill all fields");return}
+if(!e.includes("@")){alert("Enter real email");return}
+if(!r&&db.u.find(x=>x.email==e)){alert("Email exists");return}
+otp=Math.floor(100000+Math.random()*900000).toString();
+pend={id:Date.now(),name:n,email:e,password:p,bal:0,dep:0,banned:false};
+document.getElementById('st').innerHTML="Sending code to "+e+"...";
+document.getElementById('sb').disabled=true;
+try{
+await emailjs.send(S,T,{to_name:n,to_email:e,otp_code:otp});
+pop("Code sent to "+e);
+document.getElementById('app').innerHTML=`<div class=auth><div class=auth-box><h2>Enter Code</h2><p>Code sent to <b>${pend.email}</b></p><input id=oi maxlength=6 placeholder="000000"><button class=btn-dark onclick=vOTP()>Verify</button><center><br><small onclick="pend=null;signup()">Back</small> <small onclick="sOTP(1)">Resend</small></center><div id=st></div></div></div>`;
+}catch(err){alert("EmailJS failed: "+(err.text||JSON.stringify(err)));document.getElementById('st').innerHTML="Failed";document.getElementById('sb').disabled=false}
+}
+function vOTP(){let c=document.getElementById('oi').value.trim();if(c!==otp){document.getElementById('st').innerText="Wrong code";return}db.u.push(pend);db.cu=pend.id;cur=pend;sv();pend=null;otp=null;pop("Verified!");main()}
+function log(){let e=document.getElementById('le').value.toLowerCase().trim(),p=document.getElementById('lp').value,u=db.u.find(x=>x.email==e&&x.password==p);if(!u){alert("Wrong");return}if(u.banned){alert("Suspended");return}db.cu=u.id;cur=u;sv();main()}
+function logout(){db.cu=null;cur=null;sv();R()}
+
+function main(){
+document.getElementById('app').innerHTML=`<div style=padding:12px 16px;display:flex;justify-content:space-between><div class=logo>Mark<span>Tasks</span></div><div>${cur.name} ${isA(cur)?"👑":""} <b onclick=logout()>Logout</b></div></div>
+<a href="https://chat.whatsapp.com/IOgN38KEBca0kp2BRWL7Hp?s=cl&p=a&mlu=4&ilr=4" target="_blank" class="join-banner"><div>📢 Join Our Official WhatsApp Group</div><span>Join Now</span></a>
+<div class=balance-card><div>AVAILABLE BALANCE</div><div style=font-size:34px;font-weight:900>₦${cur.bal}</div><button class=btn-dark onclick=shW()>Withdraw</button></div>
+<div id=ct></div>
+<div class=nav><button id=n_home onclick=shH()>🏠 Home</button><button id=n_post onclick=shP()>📋 Post</button><button id=n_tasks onclick=shT()>✅ Tasks</button>${isA(cur)?"<button id=n_admin onclick=shA()>👑 Admin</button>":""}</div>`;
+shH()
+}
+function act(n){document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));let e=document.getElementById("n_"+n);if(e)e.classList.add("active")}
+function shH(){act("home");document.getElementById('ct').innerHTML=`<div style=text-align:center;padding:60px 20px><h3>Hello ${cur.name}</h3><button onclick=shT() style=background:#0f172a;color:#fff;border:0;padding:12px 24px;border-radius:20px>View Tasks →</button></div>`}
+function shW(){act("home");document.getElementById('ct').innerHTML=`<div style=padding:0 16px><h3>Withdraw</h3><input id=wa type=number placeholder="Min 500"><input id=wb placeholder="Bank - Account - Name"><button class=btn-dark onclick=dW()>Request</button></div>`}
+function dW(){let a=parseInt(document.getElementById('wa').value),b=document.getElementById('wb').value;if(!a||a<500||a>cur.bal){alert("Invalid");return}if(!b){alert("Enter account");return}cur.bal-=a;db.u=db.u.map(x=>x.id==cur.id?cur:x);db.w.push({id:Date.now(),user:cur.name,email:cur.email,amount:a,bank:b,date:new Date().toLocaleString(),status:"Pending"});sv();pop("Withdrawal placed")}
+
+function shT(){act("tasks");let h=`<div style=padding:0 16px><h3>Tasks • ${db.t.length}</h3>`;if(!db.t.length)h+=`<div style=text-align:center;padding:40px">No tasks</div>`;else db.t.forEach(t=>{let p=PL.find(x=>x.id==t.plat)||{i:"?",c:"#999",n:t.plat};let ac=AC[t.action]||{n:t.action,e:t.earn};h+=`<div class=task-card><div class=logo-box style=background:${p.c}>${p.i}</div><div style=flex:1><small>${p.n} - ${ac.n}</small><b style=display:block>${t.ti}</b><small>Earn ₦${t.earn}</small></div><button onclick=openTask(${t.id})>Start</button></div>`});h+=`</div>`;document.getElementById('ct').innerHTML=h}
+function openTask(id){let t=db.t.find(x=>x.id==id);if(!t)return;curT=t;document.getElementById('tpTitle').innerText=t.ti;document.getElementById('tpType').innerText=(PL.find(x=>x.id==t.plat)?.n||t.plat)+" - "+(AC[t.action]?.n||t.action);document.getElementById('tpLink').href=t.link;document.getElementById('tpUser').value="";document.getElementById('tpFile').value="";document.getElementById('taskPop').style.display="flex"}
+function submitTask(){let u=document.getElementById('tpUser').value,f=document.getElementById('tpFile').files[0];if(!u){alert("Username");return}if(!f){alert("Proof");return}db.ts.push({taskId:curT.id,taskTitle:curT.ti,user:cur.name,email:cur.email,username:u,proof:f.name,earn:curT.earn,date:new Date().toLocaleString()});sv();closeTaskPop();pop("Submitted!")}
+
+function shP(){
+act("post");
+let plats=PL.map(p=>`<div class=task-type-card id=plat_${p.id} onclick=selPFunc('${p.id}')><div class=logo-box style=background:${p.c}>${p.i}</div><div style=flex:1><b>${p.n}</b></div><div id=check_plat_${p.id}>○</div></div>`).join("");
+document.getElementById('ct').innerHTML=`<div style=padding:0 16px><h3>Post Task</h3>
+<div style=background:#eef2ff;padding:12px;border-radius:10px><div>DEPOSIT BALANCE</div><div style=font-size:22px>₦${cur.dep}</div><button class=btn-dark onclick=shD()>+ Deposit</button></div>
+<label>1. Select Platform - Task Name (with Icon)</label><div>${plats}</div>
+<div id=actionSection style=display:none><label>2. Task Type</label><div id=actionList></div><div id=customCommentSection style=display:none><textarea id=customCommentInput placeholder="Custom comment"></textarea></div></div>
+<div id=postForm style=display:none><input id=pti placeholder="Title"><input id=tlink placeholder="https://..."><input id=psl type=number placeholder=Workers oninput=calc()><div id=ca></div><button class=btn-dark onclick=dP()>Post Task</button></div></div>`;
+}
+function selPFunc(pid){selP=PL.find(x=>x.id==pid);selA=null;document.querySelectorAll("[id^=plat_]").forEach(c=>c.classList.remove("selected"));document.getElementById("plat_"+pid).classList.add("selected");document.getElementById("check_plat_"+pid).innerHTML="✓";let acts=gA(pid);let html=acts.map(aid=>{let a=AC[aid];return `<div class=task-type-card id=act_${aid} onclick=selAFunc('${aid}')><div><b>${a.n}</b> ₦${a.p}</div><div id=check_act_${aid}>○</div></div>`}).join("");document.getElementById('actionList').innerHTML=html;document.getElementById('actionSection').style.display="block";document.getElementById('postForm').style.display="none"}
+function selAFunc(aid){selA=aid;document.querySelectorAll("[id^=act_]").forEach(c=>c.classList.remove("selected"));document.getElementById("act_"+aid).classList.add("selected");document.getElementById("check_act_"+aid).innerHTML="✓";if(aid=="custom")document.getElementById('customCommentSection').style.display="block";else document.getElementById('customCommentSection').style.display="none";document.getElementById('postForm').style.display="block";calc()}
+function shD(){document.getElementById('ct').innerHTML=`<div style=padding:0 16px><h3>Deposit</h3><input id=depAmt type=number placeholder="Amount"><button class=btn-dark onclick=goAc()>Continue</button></div>`}
+function goAc(){let a=parseInt(document.getElementById('depAmt').value);if(!a||a<100){alert("Min 100");return}tmp=a;document.getElementById('ct').innerHTML=`<div style=padding:0 16px><h3>Pay ₦${a}</h3><div style=background:#f0fdf4;border:2px dashed #10b981;padding:16px;text-align:center><div>5895097608 Moniepoint Ugochi Patricia Etumugo Amount: ₦${a}</div></div><input id=sName placeholder="Sender name"><button class=btn-dark onclick=cD()>I Have Sent</button></div>`}
+function cD(){let s=document.getElementById('sName').value;if(!s){alert("Enter name");return}db.d.push({id:Date.now(),user:cur.name,email:cur.email,amount:tmp,sender:s,date:new Date().toLocaleString(),status:"Pending"});sv();pop("Deposit review 24h");shP()}
+function calc(){let a=AC[selA];let w=parseInt(document.getElementById('psl').value)||0;document.getElementById('ca').innerHTML=`${selP.n} - ${a.n} Price ₦${a.p} x ${w} = ₦${a.p*w} Have ₦${cur.dep}`}
+function dP(){let ti=document.getElementById('pti').value,lk=document.getElementById('tlink').value,w=parseInt(document.getElementById('psl').value)||0,cc=document.getElementById('customCommentInput')?document.getElementById('customCommentInput').value:"";if(!ti||!lk||!w){alert("Fill all");return}let a=AC[selA];let tot=a.p*w;if(tot>cur.dep){alert("Need ₦"+tot);return}cur.dep-=tot;db.u=db.u.map(x=>x.id==cur.id?cur:x);db.t.unshift({id:Date.now(),plat:selP.id,action:selA,ti:ti,link:lk,pay:a.p,earn:a.e,customComment:cc});sv();pop("Task posted!");setTimeout(()=>shT(),1000)}
+
+function shA(){
+if(!isA(cur))return;act("admin");
+document.getElementById('ct').innerHTML=`<div style=padding:0 16px><h3>👑 Admin Panel</h3><div style=display:flex;gap:6px;flex-wrap:wrap><button onclick="adm='users';shA()">Users (${db.u.length})</button><button onclick="adm='deps';shA()">Deposits (${db.d.length})</button><button onclick="adm='with';shA()">Withdraw (${db.w.length})</button><button onclick="adm='tasks';shA()">Tasks (${db.t.length})</button><button onclick="adm='subs';shA()">Proofs (${db.ts.length})</button></div><div id=adm></div></div>`;
+let el=document.getElementById('adm');
+if(adm=="users"){el.innerHTML=db.u.map(u=>`<div class=task-card style=flex-direction:column><b>${u.name} ${u.banned?"(BLOCKED)":""}</b><small>${u.email} Bal ₦${u.bal} Dep ₦${u.dep}</small><div><button onclick=fundUser(${u.id})>Fund</button><button onclick=blk(${u.id})>Block</button><button onclick=delU(${u.id})>Del</button></div></div>`).join("")}
+else if(adm=="deps"){el.innerHTML=db.d.map((d,i)=>`<div class=task-card style=flex-direction:column><b>Deposit ₦${d.amount}</b><small>${d.user} ${d.email} Sender:${d.sender} Status:${d.status}</small>${d.status=="Pending"?`<div><button onclick=approveDep(${i})>Approve</button><button onclick=rejectDep(${i})>Reject</button></div>`:""}</div>`).join("")||"No deposits"}
+else if(adm=="with"){el.innerHTML=db.w.map((w,i)=>`<div class=task-card style=flex-direction:column><b>Withdraw ₦${w.amount}</b><small>${w.user} Bank:${w.bank} ${w.status||"Pending"}</small>${(w.status=="Pending"||!w.status)?`<div><button onclick=approveWith(${i})>Paid</button><button onclick=rejectWith(${i})>Refund</button></div>`:""}</div>`).join("")||"No withdrawals"}
+else if(adm=="tasks"){el.innerHTML=db.t.map(t=>`<div class=task-card><b>${t.ti}</b><small>${t.plat} - ${t.action}</small><button onclick=delT(${t.id})>Del</button></div>`).join("")||"No tasks"}
+else{el.innerHTML=db.ts.map((s,i)=>`<div class=task-card style=flex-direction:column><b>${s.taskTitle} - ₦${s.earn}</b><small>${s.user} Username:${s.username}</small><div><button onclick=apT(${i})>Approve</button><button onclick="db.ts.splice(${i},1);sv();shA()">Reject</button></div></div>`).join("")||"No proofs"}
+}
+function approveDep(i){let d=db.d[i];let u=db.u.find(x=>x.email==d.email);if(!u){alert("No user");return}if(d.status=="Approved"){alert("Already");return}u.dep+=d.amount;db.u=db.u.map(x=>x.email==d.email?u:x);if(cur.email==d.email)cur.dep=u.dep;d.status="Approved";sv();shA();pop("Approved ₦"+d.amount)}
+function rejectDep(i){db.d[i].status="Rejected";sv();shA()}
+function approveWith(i){db.w[i].status="Approved";sv();shA();pop("Paid")}
+function rejectWith(i){let w=db.w[i];let u=db.u.find(x=>x.email==w.email);if(u){u.bal+=w.amount;db.u=db.u.map(x=>x.email==w.email?u:x);if(cur.email==w.email)cur.bal=u.bal;}w.status="Rejected";sv();shA()}
+function fundUser(id){let u=db.u.find(x=>x.id==id);let a=prompt("Amount");if(!a)return;a=Number(a);u.dep+=a;db.u=db.u.map(x=>x.id==id?u:x);if(cur.id==id)cur.dep=u.dep;sv();shA()}
+function delT(id){db.t=db.t.filter(x=>x.id!=id);sv();shA()}
+function apT(i){let s=db.ts[i],u=db.u.find(x=>x.email==s.email);if(u){u.bal+=s.earn;db.u=db.u.map(x=>x.email==s.email?u:x)}db.ts.splice(i,1);sv();shA()}
+function blk(id){let u=db.u.find(x=>x.id==id);u.banned=!u.banned;sv();shA()}
+function delU(id){db.u=db.u.filter(x=>x.id!=id);if(db.cu==id){db.cu=null;cur=null}sv();if(!cur)R();else shA()}
+R();
+</script>
+</body>
+ </html>rd placeholder="Password"><button class=btn-dark onclick=log()>Login</button><br><br><center><small onclick=signup()>No account? <b>Sign Up</b></small></center></div></div>`}async function sOTP(r){let n=r?pe
 nd.name:sn.value,e=r?pend.email:se.value.toLowerCase().trim(),p=r?pend.password:sp.value,s=st;if(!n||!e||!p){alert("Fill all");return}if(!e.includes("@")){alert("Real email");return}if(!r&&db.u.find(x=>x.emai
 l==e)){alert("Exists");return}otp=Math.floor(100000+Math.random()*900000).toString();pend={id:Date.now(),name:n,email:e,password:p,bal:0,dep:0,banned:false};if(s)s.innerHTML="⏳ Sending to "+e+"...";let b=sb;i
 f(b)b.disabled=true;try{await emailjs.send(S,T,{to_name:n,to_email:e,otp_code:otp});pop("✅ Code sent to "+e);app.innerHTML=`<div class=auth><div class=auth-box><h2 style=text-align:center>Enter Code</h2><p
